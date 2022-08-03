@@ -82,26 +82,26 @@ class SourceGoogleAds(AbstractSource):
     def check_connection(self, logger: logging.Logger, config: Mapping[str, Any]) -> Tuple[bool, any]:
         try:
             logger.info("Checking the config")
-            google_api = GoogleAds(credentials=self.get_credentials(config))
+            # google_api = GoogleAds(credentials=self.get_credentials(config))
 
-            accounts = self.get_account_info(google_api, config)
-            customers = Customer.from_accounts(accounts)
-            # Check custom query request validity by sending metric request with non-existant time window
-            for customer in customers:
-                for query in config.get("custom_queries", []):
-                    query = query.get("query")
-                    if customer.is_manager_account and self.is_metrics_in_custom_query(query):
-                        logger.warning(
-                            f"Metrics are not available for manager account {customer.id}. "
-                            f"Please remove metrics fields in your custom query: {query}."
-                        )
-                    if CustomQuery.cursor_field in query:
-                        return False, f"Custom query should not contain {CustomQuery.cursor_field}"
-                    req_q = CustomQuery.insert_segments_date_expr(query, "1980-01-01", "1980-01-01")
-                    response = google_api.send_request(req_q, customer_id=customer.id)
-                    # iterate over the response otherwise exceptions will not be raised!
-                    for _ in response:
-                        pass
+            # accounts = self.get_account_info(google_api, config)
+            # customers = Customer.from_accounts(accounts)
+            # # Check custom query request validity by sending metric request with non-existant time window
+            # for customer in customers:
+            #     for query in config.get("custom_queries", []):
+            #         query = query.get("query")
+            #         if customer.is_manager_account and self.is_metrics_in_custom_query(query):
+            #             logger.warning(
+            #                 f"Metrics are not available for manager account {customer.id}. "
+            #                 f"Please remove metrics fields in your custom query: {query}."
+            #             )
+            #         if CustomQuery.cursor_field in query:
+            #             return False, f"Custom query should not contain {CustomQuery.cursor_field}"
+            #         req_q = CustomQuery.insert_segments_date_expr(query, "1980-01-01", "1980-01-01")
+            #         response = google_api.send_request(req_q, customer_id=customer.id)
+            #         # iterate over the response otherwise exceptions will not be raised!
+            #         for _ in response:
+            #             pass
             return True, None
         except GoogleAdsException as exception:
             error_messages = ", ".join([error.message for error in exception.failure.errors])

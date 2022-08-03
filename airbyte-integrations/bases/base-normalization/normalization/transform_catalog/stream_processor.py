@@ -1147,7 +1147,10 @@ where 1 = 1
         file_name = self.tables_registry.get_file_name(schema, self.json_path, self.stream_name, suffix, truncate_name)
         file = f"{file_name}.sql"
         output = os.path.join(materialization_mode.value, subdir, self.schema, file)
-        config = self.get_model_partition_config(partition_by, unique_key)
+        if self.destination_type == DestinationType.SNOWFLAKE:
+            config = self.get_model_partition_config(PartitionScheme.NOTHING, unique_key)
+        else:
+            config = self.get_model_partition_config(partition_by, unique_key)
         if file_name != table_name:
             # The alias() macro configs a model's final table name.
             config["alias"] = f'"{table_name}"'
