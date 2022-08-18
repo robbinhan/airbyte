@@ -50,7 +50,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     ports:
-      - 5432:543
+      - 5432:5432
   worker:
     image: airbyte/worker:${VERSION}
     logging: *default-logging
