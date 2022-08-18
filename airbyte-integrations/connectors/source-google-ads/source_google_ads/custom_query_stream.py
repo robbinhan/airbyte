@@ -119,10 +119,9 @@ class CustomQuery(IncrementalGoogleAdsStream):
         columns = CustomQuery.SELECT_EXPR.search(query)
         if not columns:
             raise Exception("Not valid GAQL expression")
-        # columns = columns.group(1)
-        # new_columns = columns + ", segments.date\n"
-        # result_query = query.replace(columns, new_columns)
-        result_query = query
+        columns = columns.group(1)
+        new_columns = columns + ", segments.date\n"
+        result_query = query.replace(columns, new_columns)
 
         # Modify/insert where condition
         where_cond = CustomQuery.WHERE_EXPR.search(result_query)
