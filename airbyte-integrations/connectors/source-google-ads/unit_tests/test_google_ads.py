@@ -7,7 +7,7 @@ from datetime import date
 import pendulum
 from freezegun import freeze_time
 from pendulum.tz.timezone import Timezone
-from source_google_ads.google_ads import GoogleAds
+from source_google_ads.google_ads import GoogleAds,change_coding
 from source_google_ads.models import Customer
 from source_google_ads.streams import IncrementalGoogleAdsStream, chunk_date_range, get_date_params
 
@@ -227,3 +227,9 @@ def test_get_date_params_without_end_date(customers):
         assert mock_start_date == start_date
         # There is a Google limitation where we capture only a 15-day date range
         assert end_date == "2021-11-15"
+
+
+def test_change_coding():
+    field = "\354\265\234\352\263\240\354\235\230 \354\242\200\353\271\204 \353\252\250\353\260\224\354\235\274 \352\262\214\354\236\204\354\235\264 PC\353\241\234 \354\266\234\354\213\234\353\220\251\353\213\210\353\213\244, \353\254\264\353\243\214 400\354\227\260 \353\275\221\352\270\260."
+    result = change_coding(field)
+    assert result == "최고의 좀비 모바일 게임이 PC로 출시됩니다, 무료 400연 뽑기."
